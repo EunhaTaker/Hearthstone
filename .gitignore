@@ -1,6 +1,6 @@
 #dir
 **/__pycache__
-.vscode
+**/.vscode
 
 #file
 diy.py
