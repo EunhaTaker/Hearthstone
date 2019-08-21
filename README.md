@@ -6,17 +6,17 @@ Python3.7
 Windows 10
 
 ### 配置
->pip install cocos2d
->pip install flask
->pip install pyautogui
-PS: 我在使用pyautogui模拟鼠标点击的时候出现了ctype问题，解决方法
->_pyautogui_win.py -> _position() 
->将 cursor = POINT()
->替换为 cursor = ctypes.wintypes.POINT() 即可
+>pip install cocos2d  
+>pip install flask  
+>pip install pyautogui  
+PS: 我在使用pyautogui模拟鼠标点击的时候出现了ctype问题，解决方法  
+>_pyautogui_win.py -> _position()  
+>将 cursor = POINT()  
+>替换为 cursor = ctypes.wintypes.POINT() 即可  
 
 ### 运行
-服务端启动 hsServe.server
-客户端启动 hsClient.main
+- 服务端启动 hsServe.server  
+- 客户端启动 hsClient.main  
 
 ##### 注意
 - 由于只有双人对战模式，需启动两个客户端  
