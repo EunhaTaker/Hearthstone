@@ -2,8 +2,8 @@
 仿照《炉石传说》的规则实现了其大部分机制
 
 ### 测试环境
-Python3.7
-Windows 10
+Python3.7  
+Windows 10  
 
 ### 配置
 ```powershell
@@ -11,8 +11,8 @@ pip install cocos2d
 pip install flask  
 pip install pyautogui  
 ```  
-PS: 我在使用pyautogui模拟鼠标点击的时候出现了ctype问题，解决方法  
-在 _pyautogui_win.py -> _position()   
+PS: 在使用pyautogui模拟鼠标点击的时候可能会出现ctype问题，解决方法：  
+在pyautogui模块的 _pyautogui_win.py -> _position()   
 将 `cursor = POINT()`   
 替换为 `cursor = ctypes.wintypes.POINT()` 即可  
 
