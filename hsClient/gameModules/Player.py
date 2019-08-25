@@ -30,6 +30,7 @@ class Player(cocos.layer.Layer):
         self.opponent = None  #对手对象
         self.autoPlay = False  #自动施放期间
         self.initRender(isOpponent)
+        self.invincible = False     #无敌
 
     def getAvailables(self):
         cards = []

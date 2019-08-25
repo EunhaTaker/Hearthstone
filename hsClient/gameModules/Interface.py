@@ -1,6 +1,6 @@
 import logging
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(' ')    #filename filemode format
+logger = logging.getLogger(' ')  #filename filemode format
 
 import abc
 from enum import Enum
@@ -24,7 +24,7 @@ class Event(Enum):
     施放前 = 4
     施放后 = 5
     放置奥秘 = 6
-    揭示奥秘=7
+    揭示奥秘 = 7
     装备 = 8
     摧毁 = 9
     治疗 = 10
@@ -37,6 +37,7 @@ class Event(Enum):
     英雄技能 = 16
     回合结束 = 20
 
+
 class Target(Enum):
     #4位分别为：友、敌、随从、英雄
     #通过&排除获得角色代码
@@ -46,12 +47,14 @@ class Target(Enum):
     随从 = 0b1110
     英雄 = 0b1101
 
+
 class Role(Enum):
     #4位分别为：友、敌、随从、英雄
     友方 = 0b1000
     敌方 = 0b0100
     随从 = 0b0010
     英雄 = 0b0001
+
 
 # 获取一个角色的位置（与服务端约定的），用于传输
 def toLocation(card, player):
@@ -66,61 +69,68 @@ def toLocation(card, player):
         loc = (loc1, 0)
     return loc
 
+
 # 将位置转换为随从
 def fromLocation(loc, player):
     loc1, loc2 = loc
-    if loc1>=2:
+    if loc1 >= 2:
         player = player.opponent
-    if loc1%2==0:
+    if loc1 % 2 == 0:
         char = player.hero
     else:
         char = player.minionField[loc2]
     return char
+
 
 # 同类方法合并器
 def mergeFunc(*funcs):
     def newFunc(*args):
         for func in funcs:
             func(*args)
+
     return newFunc
 
+
 scale = local.itemScale
+
+
 class Card(cocos.cocosnode.CocosNode):
     desc = ''
     exts = []
     targetType = []
+
     def __init__(self, holder=None):
-        self.holder = holder    #用于衍生卡，普通卡牌在getDrawed认主
+        self.holder = holder  #用于衍生卡，普通卡牌在getDrawed认主
         #是否可操作
         self.available = False
         #绘制
         self.initImage()
-    
+
     # 绘制
     def initImage(self):
         # 初始英雄无需绘制卡牌
-        if self.type=='hero' and isinstance(self, Derive):
+        if self.type == 'hero' and isinstance(self, Derive):
             return
         super().__init__()
         #初始位置在窗口右侧
         # self.position = local.winWidth*0.6, 0
-        self.position = local.winWidth*1.1, local.winHeight*0.5
+        self.position = local.winWidth * 1.1, local.winHeight * 0.5
         ##贴图, 文本
         self.items = {}
         items = self.items
         #随从、法术、武器、英雄 标识符
-        typeCode = self.type[0]+'_'
+        typeCode = self.type[0] + '_'
         #牌框
-        frame = Sprite(local.res[typeCode+self.profession])
-        items['frame'] = frame  
+        frame = Sprite(local.res[typeCode + self.profession])
+        items['frame'] = frame
         # frame.card = self   #用于battle从点击获取卡牌
         self.add(frame, z=1)
         #横幅
-        items['ribbon'] = Sprite(local.res[typeCode+'ribbon'])
+        items['ribbon'] = Sprite(local.res[typeCode + 'ribbon'])
         self.add(items['ribbon'], z=1.2)
         #稀有度宝石
         if self.rarity not in ['basic', 'derive']:
-            items['gem'] = Sprite(local.res[typeCode+self.rarity])
+            items['gem'] = Sprite(local.res[typeCode + self.rarity])
             self.add(items['gem'], z=1.1)
         #费用背景
         items['costbg'] = Sprite(local.res['mana'])
@@ -133,35 +143,41 @@ class Card(cocos.cocosnode.CocosNode):
         for s in items.values():
             s.scale = scale
         #表示可操作的光圈（初始不显示）
-        items['circle'] = Sprite(local.res['available'], scale=scale*1.3)
+        items['circle'] = Sprite(local.res['available'], scale=scale * 1.3)
         #名称
-        items['name'] = Label(self.name,bold=True,
-                              font_name='Microsoft Yahei', font_size=8*scale,
-                              anchor_x='center', anchor_y='baseline',dpi=300)
+        items['name'] = Label(self.name,
+                              bold=True,
+                              font_name='Microsoft Yahei',
+                              font_size=8 * scale,
+                              anchor_x='center',
+                              anchor_y='baseline',
+                              dpi=300)
         self.add(items['name'], z=1.3)
         items['name'].do(Rotate(-7, duration=0))
         #描述
         self.updateDesc()
         #费用
         items['cost'] = Label(str(self.cost),
-                              font_name='Belwe Bd BT', font_size=57.5*scale,
-                              anchor_x='center', anchor_y='baseline')
+                              font_name='Belwe Bd BT',
+                              font_size=57.5 * scale,
+                              anchor_x='center',
+                              anchor_y='baseline')
         self.add(items['cost'], z=1.3)
         #位置修正
-        x,y=0,0
-        items['frame'].position = x,y
-        items['ribbon'].position = (x+12.5*scale, y-25*scale)
+        x, y = 0, 0
+        items['frame'].position = x, y
+        items['ribbon'].position = (x + 12.5 * scale, y - 25 * scale)
         if items.get('gem'):
-            items['gem'].position = (x+12*scale, y-58*scale)
-        items['costbg'].position = (x-60*scale, y+250*scale)
+            items['gem'].position = (x + 12 * scale, y - 58 * scale)
+        items['costbg'].position = (x - 60 * scale, y + 250 * scale)
         if items.get('dragon'):
-            items['dragon'].position = (x+70*scale, +250*scale)
-        items['name'].position = (x, y-25*scale)
+            items['dragon'].position = (x + 70 * scale, +250 * scale)
+        items['name'].position = (x, y - 25 * scale)
         for desc in items['desc']:
-            desc.position = (
-                x, y-120*scale-items['desc'].index(desc)*40*scale)
-        items['cost'].position = (x-162.5*scale, y+227.5*scale)
-        items['circle'].position = (x, y+10*scale)
+            desc.position = (x, y - 120 * scale -
+                             items['desc'].index(desc) * 40 * scale)
+        items['cost'].position = (x - 162.5 * scale, y + 227.5 * scale)
+        items['circle'].position = (x, y + 10 * scale)
         self.scale = local.cardScale
 
     # 更新描述
@@ -171,68 +187,83 @@ class Card(cocos.cocosnode.CocosNode):
             for dmg in damage:
                 # 对多处伤害进行解析
                 arr = desc.partition('{dmg}')
-                desc = arr[0]+str(dmg)+arr[2]
+                desc = arr[0] + str(dmg) + arr[2]
         if self.items.get('desc'):
             for item in self.items['desc']:
                 # 清除原描述
                 self.remove(item)
-        numPline = local.descLen1Line   #每行字数
-        nlines = (len(desc)+numPline-1)//numPline
+        numPline = local.descLen1Line  #每行字数
+        nlines = (len(desc) + numPline - 1) // numPline
         descs = []
-        if nlines>=1:
+        if nlines >= 1:
             # 建立新描述
             for i in range(nlines):
-                if i == nlines-1:
-                    text = desc[i*numPline:]
+                if i == nlines - 1:
+                    text = desc[i * numPline:]
                 else:
-                    text = desc[i*numPline:(i+1)*numPline]
-                descLabel = Label(text,color=(0,0,0,255),
-                                font_name='Microsoft Yahei', font_size=6*scale,
-                                anchor_x='center', anchor_y='center', dpi=300)
+                    text = desc[i * numPline:(i + 1) * numPline]
+                descLabel = Label(text,
+                                  color=(0, 0, 0, 255),
+                                  font_name='Microsoft Yahei',
+                                  font_size=6 * scale,
+                                  anchor_x='center',
+                                  anchor_y='center',
+                                  dpi=300)
                 descs.append(descLabel)
                 self.add(descLabel, z=1.3)
-        self.items['desc'] = descs    
+        self.items['desc'] = descs
 
     # 属性变化带动数值显示变化
     def __setattr__(self, name, value):
         if name == "health":
             if value == self.life:
-                color = (0, 200, 10, 255) if self.life > type(
-                    self).life else (255, 255, 255, 255)
+                color = (0, 200, 10,
+                         255) if self.life > type(self).life else (255, 255,
+                                                                   255, 255)
             else:
                 color = (255, 0, 0, 255)
             if self.items.get('life'):
                 self.remove(self.items['life'])
-            self.items['life'] = Label(str(value), color=color,
-                                       font_name='Belwe Bd BT', font_size=55*scale,
-                                       anchor_x='center', anchor_y='baseline')
+            self.items['life'] = Label(str(value),
+                                       color=color,
+                                       font_name='Belwe Bd BT',
+                                       font_size=55 * scale,
+                                       anchor_x='center',
+                                       anchor_y='baseline')
             self.add(self.items['life'], z=1.3)
-            self.items['life'].position = (190*scale, -290*scale)
+            self.items['life'].position = (190 * scale, -290 * scale)
         elif name == "attack":
             if value > type(self).attack:
                 color = (0, 200, 10, 255)
             else:
-                color = (255,255,255,255)
+                color = (255, 255, 255, 255)
             if self.items.get('attack'):
                 self.remove(self.items['attack'])
-            self.items['attack'] = Label(str(value), color=color,
-                                         font_name='Belwe Bd BT', font_size=55*scale,
-                                         anchor_x='center', anchor_y='baseline')
+            self.items['attack'] = Label(str(value),
+                                         color=color,
+                                         font_name='Belwe Bd BT',
+                                         font_size=55 * scale,
+                                         anchor_x='center',
+                                         anchor_y='baseline')
             self.add(self.items['attack'], z=1.3)
-            self.items['attack'].position = (-160*scale, -290*scale)
+            self.items['attack'].position = (-160 * scale, -290 * scale)
         if name == "durability":
             if value == self.durability:
-                color = (0, 200, 10, 255) if self.durability > type(
-                    self).durability else (255, 255, 255, 255)
+                color = (0, 200, 10,
+                         255) if self.durability > type(self).durability else (
+                             255, 255, 255, 255)
             else:
                 color = (255, 0, 0, 255)
             if self.items.get('durability'):
                 self.remove(self.items['durability'])
-            self.items['durability'] = Label(str(value), color=color,
-                                       font_name='Belwe Bd BT', font_size=55*scale,
-                                       anchor_x='center', anchor_y='baseline')
+            self.items['durability'] = Label(str(value),
+                                             color=color,
+                                             font_name='Belwe Bd BT',
+                                             font_size=55 * scale,
+                                             anchor_x='center',
+                                             anchor_y='baseline')
             self.add(self.items['durability'], z=1.3)
-            self.items['durability'].position = (190*scale, -290*scale)
+            self.items['durability'].position = (190 * scale, -290 * scale)
         super().__setattr__(name, value)
 
     # 粗略获取目标列表
@@ -267,9 +298,9 @@ class Card(cocos.cocosnode.CocosNode):
         if self in self.holder.hand:
             #若为手牌
             targets = self.getTargets()
-            if targets==None:
+            if targets == None:
                 return None
-            if self.type=='spell':
+            if self.type == 'spell':
                 #法术牌需排除魔免、潜行目标
                 for c in targets:
                     if set(c.exts).intersection({'magicAvoid', 'stealth'}):
@@ -301,7 +332,7 @@ class Card(cocos.cocosnode.CocosNode):
     # 询问是否可操作
     def ask(self):
         #消耗不超过资源
-        self.available = (self.cost<=self.holder.mana)
+        self.available = (self.cost <= self.holder.mana)
 
     # 打出
     def play(self, target):
@@ -313,7 +344,7 @@ class Card(cocos.cocosnode.CocosNode):
         target = [target] if target else []
         if 'battlecry' in self.exts:
             self.battlecry(*target)
-        if 'combo' in self.exts and self.holder.comboCount > 0 and self.type!='spell':
+        if 'combo' in self.exts and self.holder.comboCount > 0 and self.type != 'spell':
             self.combo(*target)
 
     # 打出后
@@ -323,7 +354,7 @@ class Card(cocos.cocosnode.CocosNode):
 
     # 造成伤害
     def dealDamage(self, char, amount):
-        if amount<=0:
+        if amount <= 0:
             return
         #调用受伤方法，获得最终伤害值
         damage = char.survive(amount, 'poisonous' in self.exts)
@@ -334,7 +365,7 @@ class Card(cocos.cocosnode.CocosNode):
 
     # 治疗
     def restore(self, character, amount):
-        character.health = min(character.health+amount, character.life)
+        character.health = min(character.health + amount, character.life)
 
     def summonDerive(self, minion, bfriend=True):
         ## 召唤衍生随从
@@ -360,12 +391,14 @@ class Minion(Card):
         self.attackCount = 0
         # 被冻结
         self.freezed = False
-        #buff
+        #无敌
+        self.invincible = False
+        # #buff
         # self.buffs = []
-        # 死亡的（用于剧毒）
-        self.dead = False
         # 光环列表：攻击力，生命值，其他
         self.halos = [0, 0]
+        # 死亡的（用于剧毒）
+        self.dead = False
 
     #绘制
     def initImage(self):
@@ -378,17 +411,18 @@ class Minion(Card):
         self.health = self.life
         #种族背景
         if self.race:
-            items['racebg'] = Sprite(
-                local.res['m_race'], scale=scale)
-            items['racebg'].do(RotateBy(1,duration=0))
+            items['racebg'] = Sprite(local.res['m_race'], scale=scale)
+            items['racebg'].do(RotateBy(1, duration=0))
             items['race'] = Label(self.race,
-                                  font_name='Belwe Bd BT', font_size=30*scale,
-                                  anchor_x='center', anchor_y='center')
+                                  font_name='Belwe Bd BT',
+                                  font_size=30 * scale,
+                                  anchor_x='center',
+                                  anchor_y='center')
             self.add(self.items['racebg'], z=1.25)
             print(self.items['racebg'])
             self.add(self.items['race'], z=1.3)
-            items['racebg'].position = (x+28*scale, y-252*scale)
-            items['race'].position = (x+26*scale, y-256*scale)
+            items['racebg'].position = (x + 28 * scale, y - 252 * scale)
+            items['race'].position = (x + 26 * scale, y - 256 * scale)
 
     def ask(self):
         #在场上
@@ -408,7 +442,7 @@ class Minion(Card):
 
     # 召唤
     def summon(self, fieldIdx=-1):
-        if fieldIdx==-1:
+        if fieldIdx == -1:
             local.battleScene.add(self)
         #初始化生命值
         self.health = self.life
@@ -421,7 +455,7 @@ class Minion(Card):
 
     # 入场
     def enter(self, fieldIdx=-1):
-        if fieldIdx==-1:
+        if fieldIdx == -1:
             fieldIdx = len(self.holder.minionField)
         # 安装触发器
         if 'tigger' in self.exts:
@@ -442,10 +476,11 @@ class Minion(Card):
                 self.halo()
             if 'hand' in self.haloTypes:
                 self.holder.haloChars['hand'].append(self)
-                for card in self.holder.hand:   #ps:由于对方手牌不可知，客户端无视之
+                for card in self.holder.hand:  #ps:由于对方手牌不可知，客户端无视之
                     self.halo(card)
         # 接受光环
-        for hm in self.holder.haloChars['minion']+self.holder.opponent.haloChars['minion']:
+        for hm in self.holder.haloChars[
+                'minion'] + self.holder.opponent.haloChars['minion']:
             hm.halo(self)
         # 处理冲锋
         if 'charge' in self.exts:
@@ -469,7 +504,6 @@ class Minion(Card):
         local.battle.allminions.remove(self)
         #动画
         self.holder.renderMinionField()
-            
 
     def die(self):
         #生成死亡事件
@@ -488,7 +522,7 @@ class Minion(Card):
         # 实际伤害，反伤，剧毒 <- 受攻击
         damageAmount, backDamage, poisonous = character.getAttacked(self)
         #应处理吸血
-        if backDamage>0:
+        if backDamage > 0:
             self.survive(backDamage, poisonous)
         self.attackChance -= 1
         self.attackCount += 1
@@ -514,6 +548,7 @@ class Minion(Card):
                 # 设为中毒
                 self.dead = True
         return damage
+
 
 class Spell(Card):
     type = 'spell'
@@ -544,13 +579,14 @@ class Spell(Card):
         # 所有一次性触发器，触发完毕会置自己为None，便于清理
         local.battle.tiggerField[idx] = None
 
+
 # 奥秘接口
 class Secret:
     exts = ['secret']
 
+
 # 伤害法术接口
 class DamageSpell:
-    
     def updateDesc(self):
         if isinstance(self.damage, int):
             damage = [self.damage]
@@ -562,16 +598,17 @@ class DamageSpell:
         super().updateDesc(damage=damage)
 
     def calSpellDamage(self, dmg):
-        return dmg+self.holder.spellDmgAdd
+        return dmg + self.holder.spellDmgAdd
 
     def dealDamage(self, tgt, dmg):
         dmg = self.calSpellDamage(dmg)
-        print('法伤super',super())
+        print('法伤super', super())
         return super().dealDamage(tgt, dmg)
 
     def cast(self, tgt):
         self.dealDamage(tgt, self.damage)
         super().cast()
+
 
 class Weapon(Card):
     type = 'weapon'
@@ -602,77 +639,133 @@ class Weapon(Card):
         #应生成摧毁事件
         self.deathrattle()
 
-        
+
 class Hero(Card):
     type = 'hero'
 
     def __init__(self):
         super().__init__()
-        self.freezed = False    #被冻结
+        self.freezed = False  #被冻结
 
     def getAttacked(self, damage):  # 受攻击
         self.holder.life -= damage
         return damage, 0
-    
+
 
 '''
 职业
 '''
+
+
 class Druid:
     profession = 'druid'
+
+
 class Hunter:
     profession = 'hunter'
+
+
 class Mage:
     profession = 'mage'
+
+
 class Paladin:
     profession = 'paladin'
+
+
 class Priest(abc.ABC):
-   profession = 'priest'
+    profession = 'priest'
+
+
 class Rogue(abc.ABC):
     profession = 'rogue'
+
+
 class Shaman:
     profession = 'shaman'
+
+
 class Warlock(abc.ABC):
     profession = 'warlock'
+
+
 class Warrior(abc.ABC):
     profession = 'warrior'
+
+
 class Neutral(abc.ABC):
     profession = 'neutral'
+
+
 '''
 种族
 '''
+
+
 class NonRace(abc.ABC):
     race = ''
+
+
 class Beast(abc.ABC):
     race = 'beast'
+
+
 class Dragon:
     rece = 'dragon'
+
+
 class Elemental:
     race = 'elemental'
+
+
 class Pirate:
     race = 'pirate'
+
+
 class Demon(abc.ABC):
-    race ='demon'
+    race = 'demon'
+
+
 class Murloc:
     race = 'murloc'
+
+
 class Mech(abc.ABC):
-    race ='mech'
+    race = 'mech'
+
+
 class Totem:
     race = 'totem'
+
+
 class All(Beast, Dragon, Elemental, Pirate, Demon, Murloc, Mech, Totem):
     race = 'all'
+
+
 '''
 稀有度
 '''
-class Derive:   #衍生卡
+
+
+class Derive:  #衍生卡
     rarity = 'derive'
+
+
 class Basic:
-    rarity ='basic'
+    rarity = 'basic'
+
+
 class Common:
-    rarity ='common'
+    rarity = 'common'
+
+
 class Rare:
-    rarity ='rare'
+    rarity = 'rare'
+
+
 class Epic:
-    rarity ='epic'
+    rarity = 'epic'
+
+
 class Legendary:
-    rarity ='legendary'
+    rarity = 'legendary'

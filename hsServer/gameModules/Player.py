@@ -62,11 +62,14 @@ class Player:
         self.comboCount = 0             # 本回合连击数
         self.life = self.health = 30
         self.attack = 0                 #英雄裸攻
-        self.spellDmgAdd = 0               #法术伤害
+        self.spellDmgAdd = 0            #法术伤害
         self.armor = 0                  #护甲值
         self.crystal = 0                #法力水晶
         self.mana = 0                   #法力值
         self.locks = 0                  #被锁水晶
+
+        
+        self.invincible = False     #无敌
 
         self.opponent = None    #对手对象
         self.autoPlay = False   #自动施放期间

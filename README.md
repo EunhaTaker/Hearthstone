@@ -6,13 +6,15 @@ Python3.7
 Windows 10
 
 ### 配置
->pip install cocos2d  
->pip install flask  
->pip install pyautogui  
+```powershell
+pip install cocos2d  
+pip install flask  
+pip install pyautogui  
+```  
 PS: 我在使用pyautogui模拟鼠标点击的时候出现了ctype问题，解决方法  
->_pyautogui_win.py -> _position()  
->将 cursor = POINT()  
->替换为 cursor = ctypes.wintypes.POINT() 即可  
+在 _pyautogui_win.py -> _position()   
+将 `cursor = POINT()`   
+替换为 `cursor = ctypes.wintypes.POINT()` 即可  
 
 ### 运行
 - 服务端启动 hsServe.server  
@@ -38,3 +40,9 @@ PS: 我在使用pyautogui模拟鼠标点击的时候出现了ctype问题，解�
 - 战吼
 - 法术伤害+X
 - 过载
+
+### 机制
+1. 打出随从
+打出（打出事件）->【战吼/连击】->召唤（召唤事件）->入场->【安装触发器/登记光环/接受光环】
+2. 转移随从控制权
+离场->入场

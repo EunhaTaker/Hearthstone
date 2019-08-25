@@ -4,14 +4,14 @@ from .Heros import *
 from .Weapons import *
 
 openingHeros = [Malfurion, Rexxar, Jaina, Uther, Anduin, Valeera, Thrall, Guldan, Garrosh]
-Cards = [[Moonfire,Acornbearer,Claw,],
+Cards = [[Moonfire,Claw,Acornbearer,],
 [ArcaneShot,ScavengingHyena,],
 [Countspell,],
 [MurlocKnight,],
-[NorthShireCleric,Chameleos,],
+[Chameleos,NorthShireCleric,],
 [DeadlyPoison,Eviscerate,EdwinVanCleef,],
 [],
 [Defile,Howlfiend,Treachery,],
 [KoblodBarbarian,Gorehowl,],
-[MecHaroo,BooldmageThalnos,Pig,IronbeakOwl,GrimPatron,],
+[MecHaroo,Pig,Wolf,BooldmageThalnos,IronbeakOwl,GrimPatron,],
 ]

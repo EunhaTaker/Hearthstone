@@ -15,10 +15,9 @@ class BooldmageThalnos(Minion, Neutral, NonRace, Legendary):
     desc = '法术伤害+1，亡语：抽一张牌'
     exts = ['deathrattle', 'halo']
     haloTypes = ['player']
-    cost, attack, life = 2,1,1
+    cost, attack, life = 2, 1, 1
 
     def deathrattle(self):
-        logger.info('学法亡语')
         self.holder.drawCard()
 
     def halo(self, char=None):
@@ -28,30 +27,52 @@ class BooldmageThalnos(Minion, Neutral, NonRace, Legendary):
     def dehalo(self):
         self.holder.spellDmgAdd -= 1
 
+
+class Wolf(Minion, Neutral, Beast, Common):
+    name = '恐狼前锋'
+    desc = '相邻的随从获得+1攻击力'
+    exts = ['halo']
+    haloTypes = ['minion']
+    cost, attack, life = 2, 2, 2
+
+    def halo(self, char):
+        mField = self.holder.minionField
+        if isinstance(char, Minion) and char.onField \
+                and mField.index(self) - mField.index(char) in [-1, 1]:
+            char.attack += 1
+
+    def dehalo(self, char):
+        if isinstance(char, Minion) and char.onField \
+                and mField.index(self) - mField.index(char) in [-1, 1]:
+            char.attack -= 1
+
+
 class GrimPatron(Minion, Neutral, NonRace, Rare):
     name = '奴隶主'
     desc = '每当该随从收到伤害并没有死亡，召唤另一个奴隶主'
-    cost, attack, life = 5,3,3
+    cost, attack, life = 5, 3, 3
 
     def survive(self, amount, poisonous):
         super().survive(amount, poisonous)
-        if self.life>0:
+        if self.life > 0:
             newMe = GrimPatron()
             self.derive(newMe)
+
 
 class MecHaroo(Minion, Neutral, Mech, Common):
     name = '机械袋鼠'
     desc = '亡语：召唤一个1/1的机器人'
     exts = ['deathrattle']
-    cost, attack, life = 1,1,1
+    cost, attack, life = 1, 1, 1
 
     def deathrattle(self):
         son = JoE_Bot(self.holder)
         son.summon()
 
+
 class JoE_Bot(Minion, Neutral, Mech, Derive):
     name = '机器人'
-    cost, attack, life =1,1,1
+    cost, attack, life = 1, 1, 1
 
 
 class IronbeakOwl(Minion, Neutral, Beast, Common):
@@ -59,21 +80,23 @@ class IronbeakOwl(Minion, Neutral, Beast, Common):
     desc = '战吼：沉默一个随从'
     exts = ['battlecry']
     targetType = [Target.随从]
-    cost, attack, life = 3,2,1
+    cost, attack, life = 3, 2, 1
 
     def battlecry(self, char):
         #卸载触发器
         if 'tigger' in char.exts:
             local.battle.tiggerField.remove(char.tigger)
+        # 重置属性
         Card = type(char)
-        self.setAttr(atk=Card.attack, life=Card.life)
-        #清理效果及buff
+        char.atk = Card.attack
+        char.life = Card.life
+        char.health = min(char.life, char.health)
+        # 清理效果
         char.exts = []
-        char.buffs = []
 
 
 class Pig(Minion, Neutral, Beast, Basic):
     name = '野猪'
     desc = '冲锋'
     exts = ['charge']
-    cost, attack, life = 1,1,1
+    cost, attack, life = 1, 1, 1
