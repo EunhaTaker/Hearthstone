@@ -56,10 +56,10 @@ class Minion(Card):
         self.health = self.life
         #设为在场
         self.onField = True
-        #生成召唤事件
-        self.holder.genEvent(Event.召唤, self)
         # 入场
         self.enter(fieldIdx)
+        #生成召唤事件
+        self.holder.genEvent(Event.召唤, self)
 
     # 入场
     def enter(self, fieldIdx=-1):

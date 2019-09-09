@@ -68,12 +68,12 @@ class Minion(Card):
             local.battleScene.add(self)
         # 初始化生命值
         self.health = self.life
-        # 生成召唤事件
-        self.holder.genEvent(Event.召唤, self)
         # 设为在场
         self.onField = True
         # 入场
         self.enter(fieldIdx)
+        # 生成召唤事件
+        self.holder.genEvent(Event.召唤, self)
 
     # 入场
     def enter(self, fieldIdx=-1):

@@ -1,4 +1,4 @@
-from ..Base import *
+from .Base import *
 
 class Gorehowl(Weapon, Warrior, Epic):
     cost, attack, durability = 7, 7, 1

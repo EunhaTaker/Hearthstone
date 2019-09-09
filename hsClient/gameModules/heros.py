@@ -1,4 +1,4 @@
-from ..Base import *
+from .Base import *
 
 # 初始英雄继承衍生类，避免列入卡牌列表
 
