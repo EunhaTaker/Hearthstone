@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 
 class Coin(Spell, Neutral, Derive):

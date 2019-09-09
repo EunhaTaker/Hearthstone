@@ -1,4 +1,4 @@
-from .Interface import *
+from .Base import *
 import _thread
 import copy
 

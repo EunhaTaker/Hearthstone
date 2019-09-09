@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 class Acornbearer(Minion, Druid, NonRace, Common):
     name = '橡树果实能力者'

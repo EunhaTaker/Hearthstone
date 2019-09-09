@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 class ScavengingHyena(Minion, Hunter, Beast, Common):
     name = '食腐土狼'

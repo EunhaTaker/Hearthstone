@@ -1,5 +1,5 @@
-from ..Interface import *
-# from .Interface import Hero
+from ..Base import *
+# from .Base import Hero
 
 # 初始英雄继承衍生类，避免列入卡牌列表
 

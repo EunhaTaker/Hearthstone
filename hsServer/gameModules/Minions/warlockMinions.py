@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 class Howlfiend(Minion, Warlock, Demon, Common):
     name = '咆哮魔'

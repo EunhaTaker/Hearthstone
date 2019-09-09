@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 # class Yougslminions(Minion, Neutral, NonRace, Epic):
 #     name = '尤格萨隆的仆从'
@@ -37,13 +37,14 @@ class Wolf(Minion, Neutral, Beast, Common):
 
     def halo(self, char):
         mField = self.holder.minionField
-        if isinstance(char, Minion) and char.onField \
+        if char.holder==self.holder and isinstance(char, Minion) and char.onField \
                 and mField.index(self) - mField.index(char) in [-1, 1]:
             char.attack += 1
 
     def dehalo(self, char):
-        if isinstance(char, Minion) and char.onField \
-                and mField.index(self) - mField.index(char) in [-1, 1]:
+        mField = self.holder.minionField
+        if char.holder==self.holder and isinstance(char, Minion) and char.onField \
+                and abs(mField.index(self) - mField.index(char)) == 1:
             char.attack -= 1
 
 

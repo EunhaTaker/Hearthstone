@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 class NorthShireCleric(Minion, Priest, NonRace, Basic):
     name = '北郡牧师'

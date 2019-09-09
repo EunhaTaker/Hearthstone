@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 class EdwinVanCleef(Minion, Rogue, NonRace, Legendary):
     name='埃德温 范里克夫'

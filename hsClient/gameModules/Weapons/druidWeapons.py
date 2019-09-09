@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 class Gorehowl(Weapon, Warrior, Epic):
     name = '血吼'

@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 # from Interface import Minion   #TODO why!!!
 
 class Acornbearer(Minion, Druid, NonRace, Common):

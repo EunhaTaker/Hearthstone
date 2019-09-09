@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 class KoblodBarbarian(Minion, Warrior, NonRace, Rare):
     name = '狗头人兵'

@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 
 class BooldmageThalnos(Minion, Neutral, NonRace, Legendary):
@@ -28,12 +28,13 @@ class Wolf(Minion, Neutral, Beast, Common):
 
     def halo(self, char):
         mField = self.holder.minionField
-        if isinstance(char, Minion) and char.onField \
+        if char.holder==self.holder and isinstance(char, Minion) and char.onField \
                 and mField.index(self) - mField.index(char) in [-1, 1]:
             char.attack += 1
 
     def dehalo(self, char):
-        if isinstance(char, Minion) and char.onField \
+        mField = self.holder.minionField
+        if char.holder==self.holder and isinstance(char, Minion) and char.onField \
                 and mField.index(self) - mField.index(char) in [-1, 1]:
             char.attack -= 1
 

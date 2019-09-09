@@ -1,7 +1,7 @@
 import _thread
 
 import simuInput
-from gameModules.Interface import *
+from gameModules.Base import *
 from Connect import Connect
 from gameModules.Cards4client import Cards, openingHeros, Coin
 from gameModules.Player import *
@@ -309,14 +309,13 @@ class Battle(cocos.layer.ColorLayer):
         # 若为手牌，将其位置作为提交的第一个参数
         if card in self.me.hand:
             self.commitArgs = [self.me.hand.index(card)]
-        #手牌中的随从
+        # 随从牌
         if card in self.me.hand and card.type == 'minion':
-            x, y = me.minionRegion[:2]
-            w, h = me.minionRegion[2:]
+            x, y, w, h = me.minionRegion
             if x < posx < x + w and y < posy < y + h:
                 fieldIdx = 0
                 for m in me.minionField:
-                    if m.items['frame'].position[0] < posx:
+                    if m.position[0] < posx:
                         fieldIdx += 1
                     else:
                         break
@@ -336,9 +335,12 @@ class Battle(cocos.layer.ColorLayer):
                 # print(card.name, '直接登场')
                 self.commitOrder('play')
         #无需指定目标的手牌
+        elif posy < me.minionRegion[1]: # 需上移一定距离才可打出，防误触
+            pass
         elif card in self.me.hand and not card.targetType:
             self.commitOrder('play')
         else:
+            print('法术',me.minionRegion[1],posy)
             #获得所有可针对的目标
             targets = card.getSelectables()
             #获取当前位置且可针对的目标

@@ -1,4 +1,4 @@
-from ..Interface import *
+from ..Base import *
 
 class MurlocKnight(Minion, Paladin, Murloc, Common):
     name='鱼人骑士'

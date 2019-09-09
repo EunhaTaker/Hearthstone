@@ -1,6 +1,6 @@
 from configs.common import logger
 from tools import *
-from gameModules.Interface import *
+from gameModules.Base import *
 # from Minions import *
 # from Spell import *
 # from Hero import *
@@ -25,7 +25,7 @@ class PublicBattle:
 
 
 from threading import *
-from gameModules.Interface import Event #截胡
+from gameModules.Base import Event #截胡
 import time
 import _thread
 #对战
@@ -40,7 +40,7 @@ class BattleThread(Thread):
         self.battle = PublicBattle()
         # 初始化双方数据
         for p, info in zip(clients, infos):
-            p['conn'],p['nickName'] = info[0], info[3]
+            p['conn'], p['nickName'] = info[0], info[3]
             deck = json.loads(info[2])
             #英雄id
             p['heroID'] = deck['hero']

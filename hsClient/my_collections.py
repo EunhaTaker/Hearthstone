@@ -1,4 +1,4 @@
-from gameModules.Interface import *
+from gameModules.Base import *
 from user import *
 from gameModules.Cards4client import Cards
 # from Minions import *

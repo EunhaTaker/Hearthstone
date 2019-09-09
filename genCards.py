@@ -1,5 +1,4 @@
 # print(__package__,'lalax') #TODO 为何输出3次
-# from hsClient.Interface import *
 from hsClient.gameModules.Minions import *
 from hsClient.gameModules.Spells import *
 from hsClient.gameModules.Weapons import *
